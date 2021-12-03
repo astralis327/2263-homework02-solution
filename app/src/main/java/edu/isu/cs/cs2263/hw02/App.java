@@ -17,6 +17,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
@@ -30,20 +32,22 @@ public class App extends Application {
     private Vector<Course> courses;
     private AppView currentView;
     private final Map<String, AppView> views;
-    private BorderPane mainLayout;
-    private ChoiceBox<String> depts;
+    private @Getter BorderPane mainLayout;
+    private final @Getter ChoiceBox<String> depts = new ChoiceBox<>();
+    private final @Getter Button exit = new Button("Exit");
+    private final @Getter Button display = new Button("Display (dept.)");
+    private final @Getter Button newCourse = new Button("New Course");
     private Scene scene;
+    private static Stage primaryStage;
 
-    public App() {
+    public App(Stage primaryStage) throws Exception {
         views = Maps.newHashMap();
-        views.put("Welcome", new WelcomeView(this));
-        views.put("DisplayList", new DisplayListView(this));
-        views.put("CourseForm", new CoursesFormView(this));
-
-        currentView = views.get("Welcome");
-        courses = new Vector<>();
+        start(primaryStage);
     }
 
+    public App(){
+        views = Maps.newHashMap();
+    }
     /**
      * The main entry point for all JavaFX applications.
      * The start method is called after the init method has returned,
@@ -61,27 +65,28 @@ public class App extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+
         primaryStage.setTitle("Course View");
 
-        Button display = new Button("Display (dept.)");
         display.setOnAction(event -> {
-           displayList();
+            displayList();
         });
         display.setGraphic(FontIcon.of(MaterialDesignF.FORMAT_LIST_TEXT, 20));
 
-        Button newCourse = new Button("New Course");
+
         newCourse.setOnAction(event -> {
             showCourseForm();
         });
         newCourse.setGraphic(FontIcon.of(MaterialDesignP.PLAYLIST_PLUS, 20));
 
-        Button exit = new Button("Exit");
+
         exit.setOnAction(event -> {
             exit();
         });
         exit.setGraphic(FontIcon.of(MaterialDesignP.POWER, 20));
 
-        depts = new ChoiceBox<>();
+
         depts.setOnAction(event -> {
             int selectedIndex = depts.getSelectionModel().getSelectedIndex();
             // update the display button
@@ -117,6 +122,8 @@ public class App extends Application {
 
         mainLayout.setTop(topLayout);
 
+        views.put("Welcome", new WelcomeView(this));
+        currentView = views.get("Welcome");
         mainLayout.setCenter(currentView.getView());
 
         scene = new Scene(mainLayout, 600, 300);
@@ -124,6 +131,15 @@ public class App extends Application {
         FontIcon fi = FontIcon.of(MaterialDesignF.FLASK_EMPTY, 32);
 
         primaryStage.show();
+        initializeViews();
+    }
+
+
+    public void initializeViews (){
+        views.put("DisplayList", new DisplayListView(this));
+        views.put("CourseForm", new CoursesFormView(this));
+        currentView = views.get("Welcome");
+        courses = new Vector<>();
     }
 
     public Vector<Course> getCourses() {
@@ -174,4 +190,6 @@ public class App extends Application {
     public static void main(String[] args) {
         Application.launch(args);
     }
+
+    public Scene getScene() {return scene;}
 }
