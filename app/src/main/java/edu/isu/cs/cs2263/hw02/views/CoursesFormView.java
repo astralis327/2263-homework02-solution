@@ -15,20 +15,26 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import lombok.Getter;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
 
 public class CoursesFormView extends AppView {
 
-    private TextField tfName;
-    private Spinner<Integer> spnNumber;
-    private Spinner<Integer> spnCredits;
+    private @Getter TextField tfName;
+    private @Getter Spinner<Integer> spnNumber;
+    private @Getter Spinner<Integer> spnCredits;
+
+      private GridPane gpForm;
+
     private Label lblMessage;
     private String code;
 
     public CoursesFormView(App parent) {
+
         super(parent);
+
     }
 
     @Override
@@ -36,6 +42,7 @@ public class CoursesFormView extends AppView {
         lblMessage = new Label("");
 
         tfName = new TextField();
+        tfName.setId("tfname");
         tfName.setPromptText("Enter a course name...");
         tfName.setMinWidth(400);
 
@@ -44,6 +51,7 @@ public class CoursesFormView extends AppView {
         lblName.setLabelFor(tfName);
 
         spnNumber = new Spinner<>(100, 900, 100, 1);
+        spnNumber.setId("spnNumber");
         spnNumber.setEditable(true);
 
         Label lblNumber = new Label("Number:");
@@ -51,13 +59,14 @@ public class CoursesFormView extends AppView {
         lblNumber.setLabelFor(spnNumber);
 
         spnCredits = new Spinner<>(0, 10, 1, 1);
+        spnCredits.setId("spnCredits");
         spnCredits.setEditable(true);
 
         Label lblCredits = new Label("Credits:");
         lblCredits.setTextAlignment(TextAlignment.RIGHT);
         lblCredits.setLabelFor(spnCredits);
 
-        GridPane gpForm = new GridPane();
+        gpForm = new GridPane();
         gpForm.add(lblName, 0, 0, 1, 1);
         gpForm.add(lblNumber, 0, 1, 1, 1);
         gpForm.add(lblCredits, 0, 2, 1, 1);
